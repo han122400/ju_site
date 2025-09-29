@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="kor">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Palette Cart</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f0f8 0%, #ede4eb 100%);
+        text-align: center;
+        padding: 20px;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(155, 108, 130, 0.15);
+      }
+
+      /* 모바일 기본 스타일 조정 */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+        
+        .container {
+          border-radius: 15px;
+          padding: 20px;
+          margin: 0 5px;
+        }
+      }
+
+      h1 {
+        color: #9b6c82;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        font-weight: 300;
+      }
+
+      .subtitle {
+        color: #666;
+        font-size: 1.1em;
+        margin-bottom: 30px;
+        font-style: italic;
+      }
+
+      .section-title {
+        color: #9b6c82;
+        font-size: 1.3em;
+        font-weight: 600;
+        margin: 30px 0 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* 모바일에서 텍스트 크기 조정 */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2em;
+          margin-bottom: 8px;
+        }
+        
+        .subtitle {
+          font-size: 1em;
+          margin-bottom: 25px;
+        }
+        
+        .section-title {
+          font-size: 1.1em;
+          margin: 25px 0 12px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 1.8em;
+        }
+        
+        .subtitle {
+          font-size: 0.9em;
+          margin-bottom: 20px;
+        }
+        
+        .section-title {
+          font-size: 1em;
+          margin: 20px 0 10px;
+        }
+      }
+
+      /* 색상 선택 팔레트 */
+      .color-selection {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-gap: 15px;
+        justify-content: center;
+        margin: 20px auto;
+        max-width: 500px;
+      }
+
+      /* 모바일에서 색상 선택 그리드 조정 */
+      @media (max-width: 768px) {
+        .color-selection {
+          grid-template-columns: repeat(4, 1fr);
+          grid-gap: 10px;
+          max-width: 320px;
+          margin: 15px auto;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .color-selection {
+          grid-template-columns: repeat(3, 1fr);
+          grid-gap: 8px;
+          max-width: 240px;
+        }
+      }
+
+      .color-option {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 모바일에서 색상 옵션 크기 조정 */
+      @media (max-width: 768px) {
+        .color-option {
+          width: 50px;
+          height: 50px;
+          border-radius: 10px;
+          border: 2px solid transparent;
+        }
+        
+        .color-option.selected {
+          border: 2px solid #9b6c82;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .color-option {
+          width: 45px;
+          height: 45px;
+          border-radius: 8px;
+        }
+      }
+
+      .color-option:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .color-option.selected {
+        border: 3px solid #9b6c82;
+        transform: scale(1.1);
+      }
+
+      .color-option::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .color-option.selected::after {
+        opacity: 1;
+      }
+
+      /* 실시간 파렛트 미리보기 */
+      .palette-preview {
+        background: linear-gradient(145deg, #f8f4f7, #ede4eb);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        box-shadow: inset 0 2px 10px rgba(155, 108, 130, 0.1);
+      }
+
+      .palette-container {
+        position: relative;
+        display: inline-block;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      /* 모바일에서 파렛트 미리보기 조정 */
+      @media (max-width: 768px) {
+        .palette-preview {
+          border-radius: 12px;
+          padding: 20px;
+          margin: 25px 0;
+        }
+        
+        .palette-container {
+          border-radius: 12px;
+          padding: 15px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .palette-preview {
+          padding: 15px;
+          margin: 20px 0;
+        }
+        
+        .palette-container {
+          padding: 12px;
+        }
+      }
+
+      .palette-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 50px);
+        grid-template-rows: repeat(3, 40px);
+        grid-gap: 3px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 2px solid #e0e0e0;
+      }
+
+      .palette-slot {
+        background: #f5f5f5;
+        transition: all 0.4s ease;
+        position: relative;
+      }
+
+      .palette-slot.filled {
+        animation: fillSlot 0.5s ease-in-out;
+      }
+
+      @keyframes fillSlot {
+        0% {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .selected-colors {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .selected-color-item {
+        display: flex;
+        align-items: center;
+        background: white;
+        border-radius: 20px;
+        padding: 5px 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.3s ease-out;
+      }
+
+      /* 모바일에서 선택된 색상 목록 조정 */
+      @media (max-width: 768px) {
+        .selected-colors {
+          gap: 8px;
+          margin: 15px 0;
+        }
+        
+        .selected-color-item {
+          border-radius: 15px;
+          padding: 4px 12px;
+          font-size: 0.9em;
+        }
+        
+        .color-dot {
+          width: 18px;
+          height: 18px;
+          margin-right: 6px;
+        }
+        
+        .color-code {
+          font-size: 0.8em;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .selected-colors {
+          gap: 6px;
+          margin: 12px 0;
+        }
+        
+        .selected-color-item {
+          padding: 3px 10px;
+          font-size: 0.8em;
+        }
+        
+        .color-dot {
+          width: 16px;
+          height: 16px;
+          margin-right: 5px;
+        }
+        
+        .color-code {
+          font-size: 0.7em;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .color-dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 8px;
+        border: 2px solid white;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+      }
+
+      .color-code {
+        font-family: monospace;
+        font-size: 0.9em;
+        color: #666;
+      }
+
+      .remove-color {
+        margin-left: 8px;
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      .remove-color:hover {
+        background: #ff6b6b;
+        color: white;
+      }
+
+      #cart {
+        margin-top: 30px;
+        padding: 15px 40px;
+        background: linear-gradient(135deg, #9b6c82, #814f68);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(155, 108, 130, 0.3);
+      }
+
+      #cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(155, 108, 130, 0.4);
+        background: linear-gradient(135deg, #814f68, #6d3f57);
+      }
+
+      #cart:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .clear-all {
+        background: none;
+        border: 2px solid #ff6b6b;
+        color: #ff6b6b;
+        padding: 8px 16px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 15px;
+        transition: all 0.3s ease;
+      }
+
+      .clear-all:hover {
+        background: #ff6b6b;
+        color: white;
+      }
+
+      /* 모바일에서 버튼 조정 */
+      @media (max-width: 768px) {
+        #cart {
+          margin-top: 25px;
+          padding: 12px 30px;
+          font-size: 14px;
+          border-radius: 20px;
+          letter-spacing: 0.8px;
+        }
+        
+        .clear-all {
+          padding: 6px 12px;
+          font-size: 12px;
+          margin-left: 10px;
+          border-radius: 12px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        #cart {
+          margin-top: 20px;
+          padding: 10px 25px;
+          font-size: 13px;
+          width: 100%;
+          max-width: 280px;
+        }
+        
+        .clear-all {
+          padding: 5px 10px;
+          font-size: 11px;
+          margin-left: 8px;
+        }
+      }
+
+      /* 파렛트 크기 선택 */
+      .palette-size-selector {
+        margin: 20px 0;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .size-option {
+        padding: 8px 16px;
+        border: 2px solid #9b6c82;
+        background: white;
+        color: #9b6c82;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* 모바일에서 파렛트 크기 선택 버튼 조정 */
+      @media (max-width: 768px) {
+        .palette-size-selector {
+          margin: 15px 0;
+          gap: 8px;
+        }
+        
+        .size-option {
+          padding: 6px 12px;
+          font-size: 12px;
+          border-radius: 15px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .palette-size-selector {
+          gap: 6px;
+        }
+        
+        .size-option {
+          padding: 5px 10px;
+          font-size: 11px;
+          letter-spacing: 0.3px;
+        }
+      }
+
+      .size-option:hover {
+        background: #f8f4f7;
+        transform: translateY(-2px);
+      }
+
+      .size-option.active {
+        background: #9b6c82;
+        color: white;
+        box-shadow: 0 4px 10px rgba(155, 108, 130, 0.3);
+      }
+
+      /* 다양한 파렛트 크기 스타일 */
+      .palette-grid.size-2x2 {
+        grid-template-columns: repeat(2, 50px);
+        grid-template-rows: repeat(2, 40px);
+      }
+
+      .palette-grid.size-3x2 {
+        grid-template-columns: repeat(3, 50px);
+        grid-template-rows: repeat(2, 40px);
+      }
+
+      .palette-grid.size-3x3 {
+        grid-template-columns: repeat(3, 50px);
+        grid-template-rows: repeat(3, 40px);
+      }
+
+      .palette-grid.size-3x4 {
+        grid-template-columns: repeat(3, 50px);
+        grid-template-rows: repeat(4, 40px);
+      }
+
+      /* 모바일에서 파렛트 그리드 크기 조정 */
+      @media (max-width: 768px) {
+        .palette-grid.size-2x2 {
+          grid-template-columns: repeat(2, 45px);
+          grid-template-rows: repeat(2, 35px);
+        }
+
+        .palette-grid.size-3x2 {
+          grid-template-columns: repeat(3, 45px);
+          grid-template-rows: repeat(2, 35px);
+        }
+
+        .palette-grid.size-3x3 {
+          grid-template-columns: repeat(3, 45px);
+          grid-template-rows: repeat(3, 35px);
+        }
+
+        .palette-grid.size-3x4 {
+          grid-template-columns: repeat(3, 45px);
+          grid-template-rows: repeat(4, 35px);
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .palette-grid.size-2x2 {
+          grid-template-columns: repeat(2, 40px);
+          grid-template-rows: repeat(2, 30px);
+        }
+
+        .palette-grid.size-3x2 {
+          grid-template-columns: repeat(3, 40px);
+          grid-template-rows: repeat(2, 30px);
+        }
+
+        .palette-grid.size-3x3 {
+          grid-template-columns: repeat(3, 40px);
+          grid-template-rows: repeat(3, 30px);
+        }
+
+        .palette-grid.size-3x4 {
+          grid-template-columns: repeat(3, 40px);
+          grid-template-rows: repeat(4, 30px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>#07 Lavender Staff</h1>
+      <p class="subtitle">Cool Summer (Mute) • Lavender Taupe Hues</p>
+
+      <div class="section-title">Available Colors</div>
+      <div class="color-selection">
+        <div
+          class="color-option"
+          style="background: #f6d9e6"
+          data-color="#f6d9e6"
+          title="#f6d9e6"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #f8dfe8"
+          data-color="#f8dfe8"
+          title="#f8dfe8"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #eac6d3"
+          data-color="#eac6d3"
+          title="#eac6d3"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #eedde8"
+          data-color="#eedde8"
+          title="#eedde8"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #dbbfcf"
+          data-color="#dbbfcf"
+          title="#dbbfcf"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #c7a7b9"
+          data-color="#c7a7b9"
+          title="#c7a7b9"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #e9e0ea"
+          data-color="#e9e0ea"
+          title="#e9e0ea"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #d2bbc5"
+          data-color="#d2bbc5"
+          title="#d2bbc5"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #b89da9"
+          data-color="#b89da9"
+          title="#b89da9"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #a08394"
+          data-color="#a08394"
+          title="#a08394"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #917284"
+          data-color="#917284"
+          title="#917284"
+        ></div>
+        <div
+          class="color-option"
+          style="background: #7d5e6f"
+          data-color="#7d5e6f"
+          title="#7d5e6f"
+        ></div>
+      </div>
+
+      <div class="section-title">Your Custom Palette</div>
+
+      <!-- 파렛트 크기 선택 -->
+      <div class="palette-size-selector">
+        <div class="size-option active" data-size="2x2" data-slots="4">
+          2×2 (4색)
+        </div>
+        <div class="size-option" data-size="3x2" data-slots="6">3×2 (6색)</div>
+        <div class="size-option" data-size="3x3" data-slots="9">3×3 (9색)</div>
+        <div class="size-option" data-size="3x4" data-slots="12">
+          3×4 (12색)
+        </div>
+      </div>
+
+      <div class="palette-preview">
+        <div class="palette-container">
+          <div class="palette-grid size-2x2" id="paletteGrid">
+            <!-- 슬롯들이 동적으로 생성됩니다 -->
+          </div>
+        </div>
+
+        <div class="selected-colors" id="selectedColors">
+          <!-- 선택된 색상들이 여기에 표시됩니다 -->
+        </div>
+
+        <button class="clear-all" onclick="clearAll()">Clear All</button>
+      </div>
+
+      <button id="cart">🛒 ADD TO CART</button>
+    </div>
+
+    <script>
+      let selectedColors = []
+      let currentPaletteSize = '2x2'
+      let maxColors = 4
+
+      const paletteSizes = {
+        '2x2': { slots: 4, cols: 2, rows: 2 },
+        '3x2': { slots: 6, cols: 3, rows: 2 },
+        '3x3': { slots: 9, cols: 3, rows: 3 },
+        '3x4': { slots: 12, cols: 3, rows: 4 },
+      }
+
+      // 파렛트 크기 선택 이벤트 처리
+      function setupPaletteSizeSelector() {
+        const sizeOptions = document.querySelectorAll('.size-option')
+
+        sizeOptions.forEach((option) => {
+          option.addEventListener('click', () => {
+            // 기존 활성 상태 제거
+            sizeOptions.forEach((opt) => opt.classList.remove('active'))
+
+            // 새로운 활성 상태 설정
+            option.classList.add('active')
+
+            // 파렛트 크기 변경
+            const newSize = option.dataset.size
+            const newMaxColors = parseInt(option.dataset.slots)
+
+            changePaletteSize(newSize, newMaxColors)
+          })
+        })
+      }
+
+      // 파렛트 크기 변경
+      function changePaletteSize(size, slots) {
+        currentPaletteSize = size
+        maxColors = slots
+
+        // 현재 선택된 색상이 새로운 최대값을 초과하면 자르기
+        if (selectedColors.length > maxColors) {
+          selectedColors = selectedColors.slice(0, maxColors)
+          updateSelectedColorsDisplay()
+        }
+
+        // 파렛트 그리드 업데이트
+        updatePaletteGrid()
+        updatePaletteDisplay()
+        updateCartButton()
+      }
+
+      // 파렛트 그리드 업데이트
+      function updatePaletteGrid() {
+        const paletteGrid = document.getElementById('paletteGrid')
+
+        // 기존 클래스 제거
+        paletteGrid.className = 'palette-grid'
+
+        // 새로운 크기 클래스 추가
+        paletteGrid.classList.add(`size-${currentPaletteSize}`)
+
+        // 기존 슬롯 제거
+        paletteGrid.innerHTML = ''
+
+        // 새로운 슬롯 생성
+        for (let i = 0; i < maxColors; i++) {
+          const slot = document.createElement('div')
+          slot.classList.add('palette-slot')
+          slot.id = `slot-${i}`
+          paletteGrid.appendChild(slot)
+        }
+      }
+
+      // 페이지 로드 시 파렛트 그리드 초기화 (기존 함수 제거, updatePaletteGrid로 대체)
+
+      // 색상 선택 이벤트 처리
+      function setupColorSelection() {
+        const colorOptions = document.querySelectorAll('.color-option')
+
+        colorOptions.forEach((colorOption) => {
+          colorOption.addEventListener('click', () => {
+            const color = colorOption.dataset.color
+
+            if (colorOption.classList.contains('selected')) {
+              // 이미 선택된 색상이면 제거
+              removeColor(color)
+              colorOption.classList.remove('selected')
+            } else {
+              // 새로운 색상 추가
+              if (selectedColors.length < maxColors) {
+                addColor(color)
+                colorOption.classList.add('selected')
+              } else {
+                alert(
+                  `최대 ${maxColors}개 색상까지만 선택할 수 있습니다! (${currentPaletteSize} 파렛트)`
+                )
+              }
+            }
+          })
+        })
+      }
+
+      // 색상 추가
+      function addColor(color) {
+        if (!selectedColors.includes(color)) {
+          selectedColors.push(color)
+          updatePaletteDisplay()
+          updateSelectedColorsDisplay()
+          updateCartButton()
+        }
+      }
+
+      // 색상 제거
+      function removeColor(color) {
+        const index = selectedColors.indexOf(color)
+        if (index > -1) {
+          selectedColors.splice(index, 1)
+          updatePaletteDisplay()
+          updateSelectedColorsDisplay()
+          updateCartButton()
+
+          // 색상 옵션의 선택 상태도 제거
+          const colorOption = document.querySelector(`[data-color="${color}"]`)
+          if (colorOption) {
+            colorOption.classList.remove('selected')
+          }
+        }
+      }
+
+      // 파렛트 미리보기 업데이트
+      function updatePaletteDisplay() {
+        for (let i = 0; i < maxColors; i++) {
+          const slot = document.getElementById(`slot-${i}`)
+          if (selectedColors[i]) {
+            slot.style.backgroundColor = selectedColors[i]
+            slot.classList.add('filled')
+          } else {
+            slot.style.backgroundColor = '#f5f5f5'
+            slot.classList.remove('filled')
+          }
+        }
+      }
+
+      // 선택된 색상 목록 업데이트
+      function updateSelectedColorsDisplay() {
+        const selectedColorsContainer =
+          document.getElementById('selectedColors')
+        selectedColorsContainer.innerHTML = ''
+
+        selectedColors.forEach((color) => {
+          const colorItem = document.createElement('div')
+          colorItem.className = 'selected-color-item'
+          colorItem.innerHTML = `
+            <div class="color-dot" style="background-color: ${color}"></div>
+            <span class="color-code">${color.toUpperCase()}</span>
+            <button class="remove-color" onclick="removeColor('${color}')" title="색상 제거">×</button>
+          `
+          selectedColorsContainer.appendChild(colorItem)
+        })
+      }
+
+      // 장바구니 버튼 상태 업데이트
+      function updateCartButton() {
+        const cartButton = document.getElementById('cart')
+        if (selectedColors.length > 0) {
+          cartButton.disabled = false
+          cartButton.textContent = `🛒 ADD ${selectedColors.length} COLOR${
+            selectedColors.length > 1 ? 'S' : ''
+          } TO CART (${currentPaletteSize})`
+        } else {
+          cartButton.disabled = true
+          cartButton.textContent = '🛒 ADD TO CART'
+        }
+      }
+
+      // 모든 색상 제거
+      function clearAll() {
+        selectedColors = []
+        document.querySelectorAll('.color-option').forEach((option) => {
+          option.classList.remove('selected')
+        })
+        updatePaletteDisplay()
+        updateSelectedColorsDisplay()
+        updateCartButton()
+      }
+
+      // 장바구니 추가 이벤트
+      document.getElementById('cart').addEventListener('click', () => {
+        if (selectedColors.length > 0) {
+          const colorList = selectedColors
+            .map((color) => color.toUpperCase())
+            .join(', ')
+          alert(
+            `🎨 성공적으로 장바구니에 추가되었습니다!\n\n파렛트 크기: ${currentPaletteSize}\n선택된 색상:\n${colorList}\n\n총 ${selectedColors.length}개 색상`
+          )
+
+          // 실제 구현에서는 여기서 서버로 데이터를 전송하거나
+          // 로컬 스토리지에 저장하는 등의 작업을 수행할 수 있습니다.
+        }
+      })
+
+      // 페이지 로드 시 초기화
+      document.addEventListener('DOMContentLoaded', () => {
+        updatePaletteGrid() // initializePaletteGrid 대신 사용
+        setupPaletteSizeSelector() // 파렛트 크기 선택 이벤트 설정
+        setupColorSelection()
+        updateCartButton()
+      })
+    </script>
+  </body>
+</html>

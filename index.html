@@ -7,20 +7,57 @@
     <style>
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #f5f0f8 0%, #ede4eb 100%);
+        background: url('ju1.jpeg') center center/cover no-repeat fixed;
         text-align: center;
         padding: 20px;
         min-height: 100vh;
         margin: 0;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        pointer-events: none;
+        z-index: -1;
       }
 
       .container {
         max-width: 800px;
         margin: 0 auto;
-        background: white;
-        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
         padding: 30px;
-        box-shadow: 0 10px 30px rgba(155, 108, 130, 0.15);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        position: relative;
+      }
+
+      .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 192, 203, 0.05) 25%,
+          rgba(138, 108, 202, 0.05) 50%,
+          rgba(106, 76, 154, 0.08) 75%,
+          rgba(74, 44, 106, 0.1) 100%
+        );
+        border-radius: 25px;
+        pointer-events: none;
       }
 
       /* 모바일 기본 스타일 조정 */
@@ -28,7 +65,7 @@
         body {
           padding: 10px;
         }
-        
+
         .container {
           border-radius: 15px;
           padding: 20px;
@@ -37,26 +74,40 @@
       }
 
       h1 {
-        color: #9b6c82;
+        background: linear-gradient(135deg, #ff69b4, #9370db, #4169e1, #00bfff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         font-size: 2.5em;
         margin-bottom: 10px;
-        font-weight: 300;
+        font-weight: 600;
+        text-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+        position: relative;
+        z-index: 1;
       }
 
       .subtitle {
-        color: #666;
+        color: rgba(255, 255, 255, 0.8);
         font-size: 1.1em;
         margin-bottom: 30px;
         font-style: italic;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
       }
 
       .section-title {
-        color: #9b6c82;
+        background: linear-gradient(135deg, #ff69b4, #9370db);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         font-size: 1.3em;
         font-weight: 600;
         margin: 30px 0 15px;
         text-transform: uppercase;
         letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
       }
 
       /* 모바일에서 텍스트 크기 조정 */
@@ -65,28 +116,28 @@
           font-size: 2em;
           margin-bottom: 8px;
         }
-        
+
         .subtitle {
           font-size: 1em;
           margin-bottom: 25px;
         }
-        
+
         .section-title {
           font-size: 1.1em;
           margin: 25px 0 12px;
         }
       }
-      
+
       @media (max-width: 480px) {
         h1 {
           font-size: 1.8em;
         }
-        
+
         .subtitle {
           font-size: 0.9em;
           margin-bottom: 20px;
         }
-        
+
         .section-title {
           font-size: 1em;
           margin: 20px 0 10px;
@@ -112,7 +163,7 @@
           margin: 15px auto;
         }
       }
-      
+
       @media (max-width: 480px) {
         .color-selection {
           grid-template-columns: repeat(3, 1fr);
@@ -126,10 +177,13 @@
         height: 60px;
         border-radius: 12px;
         cursor: pointer;
-        border: 3px solid transparent;
-        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.4s ease;
         position: relative;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        overflow: hidden;
       }
 
       /* 모바일에서 색상 옵션 크기 조정 */
@@ -140,12 +194,12 @@
           border-radius: 10px;
           border: 2px solid transparent;
         }
-        
+
         .color-option.selected {
           border: 2px solid #9b6c82;
         }
       }
-      
+
       @media (max-width: 480px) {
         .color-option {
           width: 45px;
@@ -155,13 +209,16 @@
       }
 
       .color-option:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3),
+          0 0 20px rgba(255, 105, 180, 0.4);
       }
 
       .color-option.selected {
-        border: 3px solid #9b6c82;
+        border: 2px solid rgba(255, 255, 255, 0.8);
         transform: scale(1.1);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3),
+          0 0 30px rgba(255, 105, 180, 0.6);
       }
 
       .color-option::after {
@@ -184,20 +241,60 @@
 
       /* 실시간 파렛트 미리보기 */
       .palette-preview {
-        background: linear-gradient(145deg, #f8f4f7, #ede4eb);
-        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
         padding: 25px;
         margin: 30px 0;
-        box-shadow: inset 0 2px 10px rgba(155, 108, 130, 0.1);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3),
+          0 8px 32px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 1;
       }
 
       .palette-container {
         position: relative;
         display: inline-block;
-        background: white;
-        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
         padding: 20px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        overflow: hidden;
+      }
+
+      .palette-container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent,
+          rgba(255, 192, 203, 0.1),
+          transparent,
+          rgba(138, 108, 202, 0.1),
+          transparent
+        );
+        animation: shimmer 4s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        }
+        50% {
+          transform: translateX(100%) translateY(100%) rotate(45deg);
+        }
       }
 
       /* 모바일에서 파렛트 미리보기 조정 */
@@ -207,19 +304,19 @@
           padding: 20px;
           margin: 25px 0;
         }
-        
+
         .palette-container {
           border-radius: 12px;
           padding: 15px;
         }
       }
-      
+
       @media (max-width: 480px) {
         .palette-preview {
           padding: 15px;
           margin: 20px 0;
         }
-        
+
         .palette-container {
           padding: 12px;
         }
@@ -229,16 +326,43 @@
         display: grid;
         grid-template-columns: repeat(4, 50px);
         grid-template-rows: repeat(3, 40px);
-        grid-gap: 3px;
-        border-radius: 10px;
+        grid-gap: 2px;
+        border-radius: 12px;
         overflow: hidden;
-        border: 2px solid #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 1;
       }
 
       .palette-slot {
-        background: #f5f5f5;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
         transition: all 0.4s ease;
         position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .palette-slot::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          45deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 50%,
+          rgba(255, 255, 255, 0.1) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .palette-slot:hover::before {
+        opacity: 1;
       }
 
       .palette-slot.filled {
@@ -270,11 +394,16 @@
       .selected-color-item {
         display: flex;
         align-items: center;
-        background: white;
-        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
         padding: 5px 15px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
         animation: slideIn 0.3s ease-out;
+        position: relative;
+        z-index: 1;
       }
 
       /* 모바일에서 선택된 색상 목록 조정 */
@@ -283,41 +412,41 @@
           gap: 8px;
           margin: 15px 0;
         }
-        
+
         .selected-color-item {
           border-radius: 15px;
           padding: 4px 12px;
           font-size: 0.9em;
         }
-        
+
         .color-dot {
           width: 18px;
           height: 18px;
           margin-right: 6px;
         }
-        
+
         .color-code {
           font-size: 0.8em;
         }
       }
-      
+
       @media (max-width: 480px) {
         .selected-colors {
           gap: 6px;
           margin: 12px 0;
         }
-        
+
         .selected-color-item {
           padding: 3px 10px;
           font-size: 0.8em;
         }
-        
+
         .color-dot {
           width: 16px;
           height: 16px;
           margin-right: 5px;
         }
-        
+
         .color-code {
           font-size: 0.7em;
         }
@@ -346,7 +475,8 @@
       .color-code {
         font-family: monospace;
         font-size: 0.9em;
-        color: #666;
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
 
       .remove-color {
@@ -374,23 +504,41 @@
       #cart {
         margin-top: 30px;
         padding: 15px 40px;
-        background: linear-gradient(135deg, #9b6c82, #814f68);
+        background: linear-gradient(135deg, #ff69b4, #9370db, #4169e1);
+        background-size: 200% 200%;
         color: white;
-        border: none;
-        border-radius: 25px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 30px;
         font-size: 16px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease;
         text-transform: uppercase;
         letter-spacing: 1px;
-        box-shadow: 0 4px 15px rgba(155, 108, 130, 0.3);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        animation: gradientShift 3s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
       }
 
       #cart:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(155, 108, 130, 0.4);
-        background: linear-gradient(135deg, #814f68, #6d3f57);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+          0 0 30px rgba(255, 105, 180, 0.6);
+        animation-duration: 1s;
       }
 
       #cart:disabled {
@@ -401,20 +549,29 @@
       }
 
       .clear-all {
-        background: none;
-        border: 2px solid #ff6b6b;
-        color: #ff6b6b;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 107, 107, 0.6);
+        color: rgba(255, 107, 107, 0.9);
         padding: 8px 16px;
-        border-radius: 15px;
+        border-radius: 20px;
         cursor: pointer;
         font-size: 14px;
         margin-left: 15px;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        position: relative;
+        z-index: 1;
       }
 
       .clear-all:hover {
-        background: #ff6b6b;
+        background: linear-gradient(135deg, #ff6b6b, #ff4757);
+        border-color: rgba(255, 255, 255, 0.8);
         color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3),
+          0 0 20px rgba(255, 107, 107, 0.4);
       }
 
       /* 모바일에서 버튼 조정 */
@@ -426,7 +583,7 @@
           border-radius: 20px;
           letter-spacing: 0.8px;
         }
-        
+
         .clear-all {
           padding: 6px 12px;
           font-size: 12px;
@@ -434,7 +591,7 @@
           border-radius: 12px;
         }
       }
-      
+
       @media (max-width: 480px) {
         #cart {
           margin-top: 20px;
@@ -443,7 +600,7 @@
           width: 100%;
           max-width: 280px;
         }
-        
+
         .clear-all {
           padding: 5px 10px;
           font-size: 11px;
@@ -462,9 +619,10 @@
 
       .size-option {
         padding: 8px 16px;
-        border: 2px solid #9b6c82;
-        background: white;
-        color: #9b6c82;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        color: rgba(255, 255, 255, 0.9);
         border-radius: 20px;
         cursor: pointer;
         font-size: 14px;
@@ -472,6 +630,10 @@
         transition: all 0.3s ease;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        position: relative;
+        z-index: 1;
       }
 
       /* 모바일에서 파렛트 크기 선택 버튼 조정 */
@@ -480,19 +642,19 @@
           margin: 15px 0;
           gap: 8px;
         }
-        
+
         .size-option {
           padding: 6px 12px;
           font-size: 12px;
           border-radius: 15px;
         }
       }
-      
+
       @media (max-width: 480px) {
         .palette-size-selector {
           gap: 6px;
         }
-        
+
         .size-option {
           padding: 5px 10px;
           font-size: 11px;
@@ -501,14 +663,20 @@
       }
 
       .size-option:hover {
-        background: #f8f4f7;
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
         transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3),
+          0 0 20px rgba(255, 105, 180, 0.3);
       }
 
       .size-option.active {
-        background: #9b6c82;
+        background: linear-gradient(135deg, #ff69b4, #9370db);
+        border-color: rgba(255, 255, 255, 0.6);
         color: white;
-        box-shadow: 0 4px 10px rgba(155, 108, 130, 0.3);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3),
+          0 0 25px rgba(255, 105, 180, 0.5);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
 
       /* 다양한 파렛트 크기 스타일 */
@@ -527,9 +695,9 @@
         grid-template-rows: repeat(3, 40px);
       }
 
-      .palette-grid.size-3x4 {
-        grid-template-columns: repeat(3, 50px);
-        grid-template-rows: repeat(4, 40px);
+      .palette-grid.size-4x3 {
+        grid-template-columns: repeat(4, 50px);
+        grid-template-rows: repeat(3, 40px);
       }
 
       /* 모바일에서 파렛트 그리드 크기 조정 */
@@ -549,12 +717,12 @@
           grid-template-rows: repeat(3, 35px);
         }
 
-        .palette-grid.size-3x4 {
-          grid-template-columns: repeat(3, 45px);
-          grid-template-rows: repeat(4, 35px);
+        .palette-grid.size-4x3 {
+          grid-template-columns: repeat(4, 45px);
+          grid-template-rows: repeat(3, 35px);
         }
       }
-      
+
       @media (max-width: 480px) {
         .palette-grid.size-2x2 {
           grid-template-columns: repeat(2, 40px);
@@ -571,91 +739,91 @@
           grid-template-rows: repeat(3, 30px);
         }
 
-        .palette-grid.size-3x4 {
-          grid-template-columns: repeat(3, 40px);
-          grid-template-rows: repeat(4, 30px);
+        .palette-grid.size-4x3 {
+          grid-template-columns: repeat(4, 40px);
+          grid-template-rows: repeat(3, 30px);
         }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>#07 Lavender Staff</h1>
-      <p class="subtitle">Cool Summer (Mute) • Lavender Taupe Hues</p>
+      <h1>✨ L2KE</h1>
+      <p class="subtitle">Iridescent Collection • Rainbow Spectrum Palette</p>
 
       <div class="section-title">Available Colors</div>
       <div class="color-selection">
         <div
           class="color-option"
-          style="background: #f6d9e6"
-          data-color="#f6d9e6"
-          title="#f6d9e6"
+          style="background: linear-gradient(135deg, #ff69b4, #ff1493)"
+          data-color="#ff69b4"
+          title="Holographic Pink"
         ></div>
         <div
           class="color-option"
-          style="background: #f8dfe8"
-          data-color="#f8dfe8"
-          title="#f8dfe8"
+          style="background: linear-gradient(135deg, #da70d6, #ba55d3)"
+          data-color="#da70d6"
+          title="Orchid Purple"
         ></div>
         <div
           class="color-option"
-          style="background: #eac6d3"
-          data-color="#eac6d3"
-          title="#eac6d3"
+          style="background: linear-gradient(135deg, #9370db, #8a2be2)"
+          data-color="#9370db"
+          title="Blue Violet"
         ></div>
         <div
           class="color-option"
-          style="background: #eedde8"
-          data-color="#eedde8"
-          title="#eedde8"
+          style="background: linear-gradient(135deg, #6495ed, #4169e1)"
+          data-color="#6495ed"
+          title="Cornflower Blue"
         ></div>
         <div
           class="color-option"
-          style="background: #dbbfcf"
-          data-color="#dbbfcf"
-          title="#dbbfcf"
+          style="background: linear-gradient(135deg, #00bfff, #1e90ff)"
+          data-color="#00bfff"
+          title="Deep Sky Blue"
         ></div>
         <div
           class="color-option"
-          style="background: #c7a7b9"
-          data-color="#c7a7b9"
-          title="#c7a7b9"
+          style="background: linear-gradient(135deg, #40e0d0, #00ced1)"
+          data-color="#40e0d0"
+          title="Turquoise"
         ></div>
         <div
           class="color-option"
-          style="background: #e9e0ea"
-          data-color="#e9e0ea"
-          title="#e9e0ea"
+          style="background: linear-gradient(135deg, #e6e6fa, #dda0dd)"
+          data-color="#e6e6fa"
+          title="Lavender"
         ></div>
         <div
           class="color-option"
-          style="background: #d2bbc5"
-          data-color="#d2bbc5"
-          title="#d2bbc5"
+          style="background: linear-gradient(135deg, #ffc0cb, #ffb6c1)"
+          data-color="#ffc0cb"
+          title="Pink"
         ></div>
         <div
           class="color-option"
-          style="background: #b89da9"
-          data-color="#b89da9"
-          title="#b89da9"
+          style="background: linear-gradient(135deg, #d8bfd8, #dda0dd)"
+          data-color="#d8bfd8"
+          title="Thistle"
         ></div>
         <div
           class="color-option"
-          style="background: #a08394"
-          data-color="#a08394"
-          title="#a08394"
+          style="background: linear-gradient(135deg, #b0c4de, #87ceeb)"
+          data-color="#b0c4de"
+          title="Light Steel Blue"
         ></div>
         <div
           class="color-option"
-          style="background: #917284"
-          data-color="#917284"
-          title="#917284"
+          style="background: linear-gradient(135deg, #f0f8ff, #e0ffff)"
+          data-color="#f0f8ff"
+          title="Alice Blue"
         ></div>
         <div
           class="color-option"
-          style="background: #7d5e6f"
-          data-color="#7d5e6f"
-          title="#7d5e6f"
+          style="background: linear-gradient(135deg, #fdf5e6, #fff8dc)"
+          data-color="#fdf5e6"
+          title="Old Lace"
         ></div>
       </div>
 
@@ -668,8 +836,8 @@
         </div>
         <div class="size-option" data-size="3x2" data-slots="6">3×2 (6색)</div>
         <div class="size-option" data-size="3x3" data-slots="9">3×3 (9색)</div>
-        <div class="size-option" data-size="3x4" data-slots="12">
-          3×4 (12색)
+        <div class="size-option" data-size="4x3" data-slots="12">
+          4×3 (12색)
         </div>
       </div>
 
@@ -699,7 +867,7 @@
         '2x2': { slots: 4, cols: 2, rows: 2 },
         '3x2': { slots: 6, cols: 3, rows: 2 },
         '3x3': { slots: 9, cols: 3, rows: 3 },
-        '3x4': { slots: 12, cols: 3, rows: 4 },
+        '4x3': { slots: 12, cols: 4, rows: 3 },
       }
 
       // 파렛트 크기 선택 이벤트 처리
@@ -823,10 +991,10 @@
         for (let i = 0; i < maxColors; i++) {
           const slot = document.getElementById(`slot-${i}`)
           if (selectedColors[i]) {
-            slot.style.backgroundColor = selectedColors[i]
+            slot.style.background = selectedColors[i]
             slot.classList.add('filled')
           } else {
-            slot.style.backgroundColor = '#f5f5f5'
+            slot.style.background = 'rgba(255, 255, 255, 0.1)'
             slot.classList.remove('filled')
           }
         }
